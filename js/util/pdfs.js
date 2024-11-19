@@ -68,7 +68,7 @@ const extractContent = (message, previousMessage, content) => {
       button => button.payload === message.content
     );
 
-    return selectedButton?.title || content;
+    return selectedButton?.title ?? content;
   }
 
   return content;
