@@ -27,6 +27,7 @@ export const generateHTMLTable = (
             <td style="padding:0 50px; border-bottom:1px solid lightgray">${message}</td>
             <td style="border-bottom:1px solid lightgray; width: 140px;">${date}</td>
         </tr>`;
-  } 
+  }
+
   chatHistoryTable.innerHTML = _html;
 };
