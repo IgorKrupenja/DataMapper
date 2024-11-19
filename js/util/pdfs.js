@@ -4,7 +4,6 @@ export const extractMessageInfo = (
   csaTitleVisible,
   csaNameVisible
 ) => {
-  console.log("IGOR message", message);
   const author = extractAuthor(message, csaTitleVisible, csaNameVisible);
 
   const date = new Date(message.created).toLocaleDateString("et-EE");
@@ -16,20 +15,7 @@ export const extractMessageInfo = (
   
   let messageContent = "-";
   if (content) {
-    let selectedButton;
-
-    if (
-      previousMessage?.buttons &&
-      previousMessage?.authorRole !== "end-user" &&
-      message.authorRole === "end-user"
-    ) {
-      selectedButton = JSON.parse(previousMessage.buttons).find(button => button.payload === message.content);
-      messageContent = selectedButton?.title;
-    }
-
-    if (!selectedButton) {
-      messageContent = content;
-    }
+    messageContent = extractContent(message, previousMessage, content);
   } else if (message.buttons) {
     messageContent = extractButtons(message.buttons);
   } else if (message.event) {
@@ -42,10 +28,6 @@ export const extractMessageInfo = (
     date: `${time} ${date}`,
   };
 };
-
-
-// {content=#common_service, /POST/companies/revenue, (12383236), event=, created=2024-11-19T09:58:17.948+00:00, authorRole=end-user, authorFirstName=, authorLastName=, csaTitle=null, buttons=null, options=null}, 
-
 
 const extractAuthor = (message, csaTitleVisible, csaNameVisible) => {
   const { authorRole, authorFirstName, authorLastName, csaTitle } = message;
@@ -74,6 +56,22 @@ const tryUnesacpe = (content) => {
   } catch (error) {
     return content;
   }
+};
+
+const extractContent = (message, previousMessage, content) => {
+  if (
+    previousMessage?.buttons &&
+    previousMessage?.authorRole !== "end-user" &&
+    message.authorRole === "end-user"
+  ) {
+    const selectedButton = JSON.parse(previousMessage.buttons).find(
+      button => button.payload === message.content
+    );
+
+    return selectedButton?.title || content;
+  }
+
+  return content;
 };
 
 const extractEvent = (message) => {
