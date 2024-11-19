@@ -1,8 +1,10 @@
 export const extractMessageInfo = (
   message,
+  previousMessage,
   csaTitleVisible,
   csaNameVisible
 ) => {
+  console.log("IGOR message", message);
   const author = extractAuthor(message, csaTitleVisible, csaNameVisible);
 
   const date = new Date(message.created).toLocaleDateString("et-EE");
@@ -14,7 +16,20 @@ export const extractMessageInfo = (
   
   let messageContent = "-";
   if (content) {
-    messageContent = content;
+    let selectedButton;
+
+    if (
+      previousMessage?.buttons &&
+      previousMessage?.authorRole !== "end-user" &&
+      message.authorRole === "end-user"
+    ) {
+      selectedButton = JSON.parse(previousMessage.buttons).find(button => button.payload === message.content);
+      messageContent = selectedButton?.title;
+    }
+
+    if (!selectedButton) {
+      messageContent = content;
+    }
   } else if (message.buttons) {
     messageContent = extractButtons(message.buttons);
   } else if (message.event) {

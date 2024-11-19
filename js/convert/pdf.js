@@ -12,11 +12,14 @@ export const generateHTMLTable = (
                   <th style="text-align: left">Aeg</th>
               </tr>`;
 
-  for (const element of messages) {
+  for (const [i, element] of messages.entries()) {
+    const previousMessage = i > 0 ? messages[i - 1] : null;
+
     const { author, message, date } = extractMessageInfo(
       element,
+      previousMessage,
       csaTitleVisible,
-      csaNameVisible
+      csaNameVisible,
     );
 
     _html += `<tr>
@@ -24,7 +27,6 @@ export const generateHTMLTable = (
             <td style="padding:0 50px; border-bottom:1px solid lightgray">${message}</td>
             <td style="border-bottom:1px solid lightgray; width: 140px;">${date}</td>
         </tr>`;
-  }
-
+  } 
   chatHistoryTable.innerHTML = _html;
 };
