@@ -50,11 +50,20 @@ const tryUnesacpe = (content) => {
 };
 
 const extractEvent = (message) => {
-  const translatedEvent = eventTranslator(message.event);
-  if (!translatedEvent) {
-    return translatedEvent;
+  if (message.buttons) {
+    return (
+      "Valige üks järgmistest valikutest: " +
+      JSON.parse(message.buttons).map((button) => button.title).join(", ")
+    );
   }
-  return `<span style="color:purple"><b><small>${translatedEvent}</smal></b></span>`;
+
+  if (message.event) {
+   const translatedEvent = eventTranslator(message.event);
+    if (!translatedEvent) {
+      return translatedEvent;
+    }
+    return `<span style="color:purple"><b><small>${translatedEvent}</smal></b></span>`;
+  }
 };
 
 const buildEventTranslator = () => {
@@ -94,7 +103,7 @@ const buildEventTranslator = () => {
     unavailable_holiday: "Puhkus",
   };
 
-  return (event) => eventTranslation[event?.toLowerCase()] || event;
+  return (event) => eventTranslation[event.toLowerCase()] || event;
 };
 
 const eventTranslator = buildEventTranslator();
