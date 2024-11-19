@@ -11,7 +11,15 @@ export const extractMessageInfo = (
   const content = message.content
     ? tryUnesacpe(message.content)
     : message.content;
-  const messageContent = content || extractEvent(message) || "-";
+  
+  let messageContent = "-";
+  if (content) {
+    messageContent = content;
+  } else if (message.buttons) {
+    messageContent = extractButtons(message.buttons);
+  } else if (message.event) {
+    messageContent = extractEvent(message);
+  }
 
   return {
     author,
@@ -19,6 +27,10 @@ export const extractMessageInfo = (
     date: `${time} ${date}`,
   };
 };
+
+
+// {content=#common_service, /POST/companies/revenue, (12383236), event=, created=2024-11-19T09:58:17.948+00:00, authorRole=end-user, authorFirstName=, authorLastName=, csaTitle=null, buttons=null, options=null}, 
+
 
 const extractAuthor = (message, csaTitleVisible, csaNameVisible) => {
   const { authorRole, authorFirstName, authorLastName, csaTitle } = message;
@@ -50,20 +62,18 @@ const tryUnesacpe = (content) => {
 };
 
 const extractEvent = (message) => {
-  if (message.buttons) {
-    return (
-      "Valige üks järgmistest valikutest: " +
-      JSON.parse(message.buttons).map((button) => button.title).join(", ")
-    );
+  const translatedEvent = eventTranslator(message.event);
+  if (!translatedEvent) {
+    return translatedEvent;
   }
+  return `<span style="color:purple"><b><small>${translatedEvent}</smal></b></span>`;
+};
 
-  if (message.event) {
-   const translatedEvent = eventTranslator(message.event);
-    if (!translatedEvent) {
-      return translatedEvent;
-    }
-    return `<span style="color:purple"><b><small>${translatedEvent}</smal></b></span>`;
-  }
+const extractButtons = (buttons) => {
+  return (
+    "Valige üks järgmistest valikutest: " +
+    JSON.parse(buttons).map((button) => button.title).join(", ")
+  );
 };
 
 const buildEventTranslator = () => {
