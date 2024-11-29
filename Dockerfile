@@ -9,6 +9,8 @@ ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 RUN apk add --no-cache chromium
 COPY package*.json .
 RUN npm ci --ignore-scripts
+# RUN chromium-browser --product-version 
+# todo version is 131.0.6778.85
 
 # Run image
 FROM build AS run
