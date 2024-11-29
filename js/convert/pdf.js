@@ -1,6 +1,6 @@
 import { extractMessageInfo } from "../util/pdfs.js";
 
-export const generateHTMLTable = (
+export const generateMessageTable = (
   template,
   messages,
   csaTitleVisible,
