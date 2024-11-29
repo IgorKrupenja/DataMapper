@@ -79,7 +79,7 @@ const extractEvent = (message) => {
   if (!translatedEvent) {
     return translatedEvent;
   }
-  return `<span style="color:purple"><b><small>${translatedEvent}</smal></b></span>`;
+  return `<span style="color:purple"><b><small>${translatedEvent}</small></b></span>`;
 };
 
 const extractButtons = (buttons) => {
