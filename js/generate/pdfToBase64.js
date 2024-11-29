@@ -7,7 +7,7 @@ export async function generatePdfToBase64(template, res) {
 
     const page = await browser.newPage();
     await page.setContent(template, { waitUntil: "load", timeout: 0 });
-    const buffer = await page.pdf({
+    const uintArray = await page.pdf({
       format: "A4",
       printBackground: true,
       timeout: 0,
@@ -15,7 +15,7 @@ export async function generatePdfToBase64(template, res) {
 
     await browser.close();
     // todo move res logic to controller
-    res.json({ response: Buffer.from(buffer).toString("base64") });
+    res.json({ response: Buffer.from(uintArray).toString("base64") });
   } catch (err) {
     res.sendStatus(500);
   }
