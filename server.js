@@ -177,7 +177,7 @@ app.post(
       .withMessage("csaNameVisible is required and must be a string"),
   ],
   rateLimit,
-  (req, res) => {
+  async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -195,7 +195,12 @@ app.post(
       parseBoolean(csaTitleVisible),
       parseBoolean(csaNameVisible)
     );
-    convertHtmlToPdf(html, res);
+
+    try {
+      res.json({ response: await convertHtmlToPdf(html) });
+    } catch (error) {
+      res.status(500).json({message: "Error generating PDF"});
+    }
   }
 );
 
