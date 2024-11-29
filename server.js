@@ -16,7 +16,7 @@ import { fileURLToPath } from "url";
 
 import sendMockEmail from "./js/email/sendMockEmail.js";
 import { generatePdf } from "./js/generate/pdf.js";
-import { generatePdfToBase64 } from "./js/generate/pdfToBase64.js";
+import { convertHtmlToPdf } from "./js/generate/convertHtmlToPdf.js";
 import { generateHTMLTable } from "./js/convert/pdf.js";
 import * as helpers from "./lib/helpers.js";
 import {
@@ -195,7 +195,7 @@ app.post(
       parseBoolean(csaTitleVisible),
       parseBoolean(csaNameVisible)
     );
-    generatePdfToBase64(html, res);
+    convertHtmlToPdf(html, res);
   }
 );
 

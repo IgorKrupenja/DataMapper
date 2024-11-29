@@ -1,6 +1,6 @@
 import * as puppeteer from 'puppeteer';
 
-export async function generatePdfToBase64(html, res) {
+export async function convertHtmlToPdf(html, res) {
   try {
     const t0 = performance.now();
     console.log("convertHtmlToPdf: generating from HTML:\n\n", html);
