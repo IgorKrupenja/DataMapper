@@ -17,7 +17,7 @@ import { fileURLToPath } from "url";
 import sendMockEmail from "./js/email/sendMockEmail.js";
 import { generatePdf } from "./js/generate/pdf.js";
 import { convertHtmlToPdf } from "./js/generate/convertHtmlToPdf.js";
-import { generateHTMLTable } from "./js/convert/pdf.js";
+import { generateMessagesTable } from "./js/convert/pdf.js";
 import * as helpers from "./lib/helpers.js";
 import {
   buildContentFilePath,
@@ -189,7 +189,7 @@ app.post(
       .readFileSync(__dirname + "/views/pdf.handlebars")
       .toString();
 
-    const html = generateHTMLTable(
+    const html = generateMessagesTable(
       template,
       messages,
       parseBoolean(csaTitleVisible),
