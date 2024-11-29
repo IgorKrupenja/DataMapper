@@ -75,7 +75,7 @@ const extractContent = (message, previousMessage, content) => {
 };
 
 const extractEvent = (message) => {
-  const translatedEvent = eventTranslator(message.event);
+  const translatedEvent = translateEvent(message.event);
   if (!translatedEvent) {
     return translatedEvent;
   }
@@ -89,8 +89,8 @@ const extractButtons = (buttons) => {
   );
 };
 
-const buildEventTranslator = () => {
-  const eventTranslation = {
+const translateEvent = (event) => {
+  const eventTranslations = {
     answered: "Vastatud",
     terminated: "Määramata",
     sent_to_csa_email: "Vestlus saadetud klienditeenindaja e-mailile",
@@ -126,7 +126,5 @@ const buildEventTranslator = () => {
     unavailable_holiday: "Puhkus",
   };
 
-  return (event) => eventTranslation[event.toLowerCase()] || event;
-};
-
-const eventTranslator = buildEventTranslator();
+  return eventTranslations[event.toLowerCase()] ?? event;
+}
