@@ -1,6 +1,7 @@
 import { extractMessageInfo } from "../util/pdfs.js";
 
 export const generateHTMLTable = (
+  // todo rename to ??? template?
   chatHistoryTable,
   messages,
   csaTitleVisible,
@@ -29,5 +30,5 @@ export const generateHTMLTable = (
         </tr>`;
   }
 
-  chatHistoryTable.innerHTML = _html;
+  return chatHistoryTable.replace("{{{table}}}", _html);
 };

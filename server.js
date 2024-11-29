@@ -2,8 +2,6 @@ import express from "express";
 import { create, engine } from "express-handlebars";
 import setRateLimit from "express-rate-limit";
 import { body, matchedData, validationResult } from "express-validator";
-import jsdom from "jsdom";
-const { JSDOM } = jsdom;
 import Papa from "papaparse";
 import secrets from "./controllers/secrets.js";
 import fs from "fs";
@@ -190,15 +188,14 @@ app.post(
     const template = fs
       .readFileSync(__dirname + "/views/pdf.handlebars")
       .toString();
-    const dom = new JSDOM(template);
 
-    generateHTMLTable(
-      dom.window.document.getElementById("chatHistoryTable"),
+    const html = generateHTMLTable(
+      template,
       messages,
       parseBoolean(csaTitleVisible),
       parseBoolean(csaNameVisible)
     );
-    generatePdfToBase64(dom.window.document.documentElement.innerHTML, res);
+    generatePdfToBase64(html, res);
   }
 );
 
