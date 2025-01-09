@@ -4,6 +4,13 @@
 debug_log() {
   echo "Running command: $1"
 }
+# Delete existing data before seeding
+debug_log "Deleting existing intents, rules, responses, and stories"
+curl -X POST "http://component-opensearch-node:9200/intents/_delete_by_query" -H 'Content-Type: application/json' -d '{"query": {"match_all": {}}}'
+curl -X POST "http://component-opensearch-node:9200/rules/_delete_by_query" -H 'Content-Type: application/json' -d '{"query": {"match_all": {}}}'
+curl -X POST "http://component-opensearch-node:9200/responses/_delete_by_query" -H 'Content-Type: application/json' -d '{"query": {"match_all": {}}}'
+curl -X POST "http://component-opensearch-node:9200/stories/_delete_by_query" -H 'Content-Type: application/json' -d '{"query": {"match_all": {}}}'
+
 
 # Intents
 for file in /rasa/locations/data/nlu/* ; do
