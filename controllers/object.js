@@ -43,7 +43,7 @@ router.post(
 );
 
 router.post(
-  "/intents/remove-responses",
+  "/responses/remove-by-intent-name",
   [
     body("responses")
       .isObject()
