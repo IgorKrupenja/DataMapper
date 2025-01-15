@@ -42,43 +42,6 @@ router.post(
   }
 );
 
-router.post(
-  "/responses/remove-by-intent-name",
-  [
-    body("responses")
-      .isObject()
-      .withMessage("responses is required and must be an object"),
-    body("intent")
-      .isString()
-      .withMessage("intent is required and must be a string"),
-  ],
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
-    const { responses, intent } = matchedData(req);
-
-    if (!isValidIntentName(intent)) {
-      return res
-        .status(400)
-        .send({ error: "Intent name contains illegal characters" });
-    }
-
-    const pattern = new RegExp(`^utter_${intent}`);
-    
-    const result = Object.entries(responses).reduce((acc, [key, value]) => {
-      if (!pattern.test(key)) {
-        acc[key] = value;
-      }
-      return acc;
-    }, {});
-
-    return res.status(200).send(result);
-  }
-);
-
 router.post("/replace/key-value-in-obj", async (req, res) => {
   let { object, oldKey, newKey, newValue } = req.body;
 
