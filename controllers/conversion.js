@@ -256,21 +256,18 @@ router.post('/string-to-xlsx',
       .withMessage("data must be an array of strings")
   ],
   async (req, res) => {
-  const workbook = new ExcelJS.Workbook();
-  const worksheet = workbook.addWorksheet('Sheet1');
-  
-  req.body.data.forEach((row, i) => {
-    console.log(`writing row ${i}`, row)
-    worksheet.addRow([row]);
-  });
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Sheet1');
+    
+    req.body.data.forEach((row, i) => {
+      worksheet.addRow([row]);
+    });
 
-  console.log('actual rows count', worksheet.actualRowCount)
- 
-  res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-  res.setHeader('Content-Disposition', 'attachment; filename="output.xlsx"');
-  return workbook.xlsx.write(res).then(() => {
-    res.end();
-  });
+    const buffer = await workbook.xlsx.writeBuffer();
+    
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', 'attachment; filename="output.xlsx"');
+    res.send(buffer);
 });
 
 export default router;
