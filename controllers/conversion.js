@@ -249,27 +249,28 @@ router.post(
   }
 );
 
-router.post('/string-to-xslx', 
+router.post('/string-to-xlsx', 
   [
     body("data")
-      .isString()
-      .withMessage("data must be a string")
+      .isArray()
+      .withMessage("data must be an array of strings")
   ],
   async (req, res) => {
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet('Sheet1');
   
-  req.body.data.split('\n').forEach((row) => {
+  req.body.data.forEach((row, i) => {
+    console.log(`writing row ${i}`, row)
     worksheet.addRow([row]);
   });
+
+  console.log('actual rows count', worksheet.actualRowCount)
  
   res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
   res.setHeader('Content-Disposition', 'attachment; filename="output.xlsx"');
-  await workbook.xlsx.write(res);
-  res.end();
-  // return workbook.xlsx.write(res).then(() => {
-  //   res.end();
-  // });
+  return workbook.xlsx.write(res).then(() => {
+    res.end();
+  });
 });
 
 export default router;
