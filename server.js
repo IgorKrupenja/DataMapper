@@ -50,8 +50,9 @@ const PORT = process.env.PORT || 3000;
 const REQUEST_SIZE_LIMIT = '100mb';
 const app = express().disable("x-powered-by");
 const rateLimit = setRateLimit({
+  // One minute
   windowMs: 60 * 1000,
-  max: 30,
+  max: process.env.RATE_LIMIT_PER_MINUTE ?? 30,
   message: "Too many requests",
   headers: true,
   statusCode: 429,
