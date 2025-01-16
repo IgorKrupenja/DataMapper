@@ -4,6 +4,7 @@ import multer from "multer";
 import Papa from "papaparse";
 import base64ToText from "../js/util/base64ToText.js";
 import { body, matchedData, validationResult } from "express-validator";
+import ExcelJS from "exceljs";
 
 const router = express.Router();
 
@@ -247,5 +248,28 @@ router.post(
     res.json({ json: yamlString });
   }
 );
+
+router.post('/string-to-xslx', 
+  [
+    body("data")
+      .isString()
+      .withMessage("data must be a string")
+  ],
+  async (req, res) => {
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet('Sheet1');
+  
+  req.body.data.split('\n').forEach((row) => {
+    worksheet.addRow([row]);
+  });
+ 
+  res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+  res.setHeader('Content-Disposition', 'attachment; filename="output.xlsx"');
+  await workbook.xlsx.write(res);
+  res.end();
+  // return workbook.xlsx.write(res).then(() => {
+  //   res.end();
+  // });
+});
 
 export default router;
