@@ -52,7 +52,7 @@ const app = express().disable("x-powered-by");
 const rateLimit = setRateLimit({
   // One minute
   windowMs: 60 * 1000,
-  max: process.env.RATE_LIMIT ?? 30,
+  max: process.env.RATE_LIMIT_PER_MINUTE ?? 30,
   message: "Too many requests",
   headers: true,
   statusCode: 429,
