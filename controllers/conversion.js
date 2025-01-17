@@ -259,7 +259,7 @@ router.post('/string-to-xlsx',
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Sheet1');
     
-    req.body.data.forEach((row, i) => {
+    req.body.data.forEach((row) => {
       worksheet.addRow([row]);
     });
 
