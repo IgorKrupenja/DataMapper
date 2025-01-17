@@ -271,7 +271,6 @@ router.post('/string-to-xlsx',
 router.post("/xlsx-to-json", async (req, res) => {
   try {
     if (!req.body.file) {
-      console.log('No file received');
       return res.status(400).json({ error: "No file uploaded" });
     }
 
@@ -283,15 +282,12 @@ router.post("/xlsx-to-json", async (req, res) => {
     const worksheet = workbook.getWorksheet(1);
     const jsonData = [];
     
-    worksheet.eachRow((row, rowNumber) => {
-      if (rowNumber > 1) {
-        jsonData.push(row.values.slice(1));
-      }
+    worksheet.eachRow((row) => {
+      jsonData.push(row.values.slice(1));
     });
     
     res.json(jsonData);
   } catch (error) {
-    console.error('Error processing file:', error);
     res.status(500).json({ error: "Failed to process Excel file", details: error.message });
   }
 });
