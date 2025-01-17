@@ -268,59 +268,33 @@ router.post('/string-to-xlsx',
 });
 
 
-// router.post("/xlsx-to-json", multer().single('file'), async (req, res) => {
-//   if (!req.file) {
-//     return res.status(400).json({ error: "No file uploaded" });
-//   }
-
-//   try {
-//     const workbook = new ExcelJS.Workbook();
-//     await workbook.xlsx.load(req.file.buffer);
-//     const worksheet = workbook.getWorksheet('Sheet1');
-//     const jsonData = [];
-    
-//     worksheet.eachRow((row) => {
-//       console.log(row.values)
-//       jsonData.push(row.values.slice(1)); // slice(1) removes the empty first element
-//     });
-    
-//     res.json(jsonData);
-//   } catch (error) {
-//     res.status(500).json({ error: "Failed to process Excel file", details: error.message });
-//   }
-// });
-
 router.post("/xlsx-to-json", async (req, res) => {
-  if (!req.body.file) {
-    return res.status(400).json({ error: "No file uploaded" });
-  }
-
   try {
+    if (!req.body.file) {
+      console.log('No file received');
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+
+    const base64Data = Object.values(req.body.file)[0];
+    const buffer = Buffer.from(base64Data, 'base64');
+    
     const workbook = new ExcelJS.Workbook();
-    console.log('file', Object.values(req.body.file)[0])
-    await workbook.xlsx.load(Object.values(req.body.file)[0]);
+    await workbook.xlsx.load(buffer);
     const worksheet = workbook.getWorksheet(1);
     const jsonData = [];
     
-    worksheet.eachRow((row) => {
-      console.log(row.values)
-      jsonData.push('row', row.values.slice(1)); // slice(1) removes the empty first element
+    worksheet.eachRow((row, rowNumber) => {
+      if (rowNumber > 1) {
+        jsonData.push(row.values.slice(1));
+      }
     });
     
     res.json(jsonData);
   } catch (error) {
+    console.error('Error processing file:', error);
     res.status(500).json({ error: "Failed to process Excel file", details: error.message });
   }
 });
 
-// router.post("/csv-to-json", (req, res) => {
-//   if (!req.body.file) {
-//     return res.status(400).json({ error: "No file uploaded" }).send();
-//   }
-//   const fileContent = Object.values(req.body.file)[0];
-//   const result = Papa.parse(fileContent, { skipEmptyLines: true });
-//   const csvData = result.data;
-//   res.json(csvData);
-// });
 
 export default router;
