@@ -283,6 +283,7 @@ router.post("/xlsx-to-json", async (req, res) => {
     const jsonData = [];
     
     worksheet.eachRow((row) => {
+      // ExcelJS uses 1-based indexing for columns so values[0] is unused.
       jsonData.push(row.values.slice(1));
     });
     
