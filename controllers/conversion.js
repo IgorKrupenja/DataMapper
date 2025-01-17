@@ -249,7 +249,7 @@ router.post(
   }
 );
 
-router.post('/string-to-xlsx', 
+router.post('/array-to-xlsx', 
   [
     body("data")
       .isArray()
@@ -268,7 +268,7 @@ router.post('/string-to-xlsx',
 });
 
 
-router.post("/xlsx-to-json", async (req, res) => {
+router.post("/xlsx-to-array", async (req, res) => {
   try {
     if (!req.body.file) {
       return res.status(400).json({ error: "No file uploaded" });
