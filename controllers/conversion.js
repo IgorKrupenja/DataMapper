@@ -264,8 +264,6 @@ router.post('/string-to-xlsx',
     });
 
     const buffer = await workbook.xlsx.writeBuffer();
-    // res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    // res.setHeader('Content-Disposition', 'attachment; filename="output.xlsx"');
     res.json({ base64String: buffer.toString('base64') });
 });
 
