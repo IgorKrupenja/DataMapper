@@ -4,6 +4,7 @@ import multer from "multer";
 import Papa from "papaparse";
 import base64ToText from "../js/util/base64ToText.js";
 import { body, matchedData, validationResult } from "express-validator";
+import ExcelJS from "exceljs";
 
 const router = express.Router();
 
@@ -247,5 +248,50 @@ router.post(
     res.json({ json: yamlString });
   }
 );
+
+router.post('/array-to-xlsx', 
+  [
+    body("data")
+      .isArray()
+      .withMessage("data must be an array of strings")
+  ],
+  async (req, res) => {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Sheet1');
+    
+    req.body.data.forEach((row) => {
+      worksheet.addRow([row]);
+    });
+
+    const buffer = await workbook.xlsx.writeBuffer();
+    res.json({ base64String: buffer.toString('base64') });
+});
+
+
+router.post("/xlsx-to-array", async (req, res) => {
+  try {
+    if (!req.body.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+
+    const base64Data = Object.values(req.body.file)[0];
+    const buffer = Buffer.from(base64Data, 'base64');
+    
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.load(buffer);
+    const worksheet = workbook.getWorksheet(1);
+    const jsonData = [];
+    
+    worksheet.eachRow((row) => {
+      // ExcelJS uses 1-based indexing for columns so values[0] is unused.
+      jsonData.push(row.values.slice(1));
+    });
+    
+    res.json(jsonData);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to process Excel file", details: error.message });
+  }
+});
+
 
 export default router;
