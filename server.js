@@ -15,7 +15,6 @@ import * as path from "path";
 import { fileURLToPath } from "url";
 
 import sendMockEmail from "./js/email/sendMockEmail.js";
-import { generatePdf } from "./js/generate/pdf.js";
 import { convertHtmlToPdf } from "./js/generate/convertHtmlToPdf.js";
 import { generateMessagesTable } from "./js/convert/pdf.js";
 import * as helpers from "./lib/helpers.js";
