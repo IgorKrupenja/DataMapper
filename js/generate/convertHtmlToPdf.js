@@ -1,7 +1,7 @@
 import * as puppeteer from 'puppeteer';
 
 export async function convertHtmlToPdf(html) {
-  const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-dev-shm-usage'] });
+  const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-dev-shm-usage', '--enable-logging', '--v=1'], dumpio: true, });
   console.debug("convertHtmlToPdf: created browser")
   
   const page = await browser.newPage();
