@@ -206,13 +206,6 @@ app.post(
   }
 );
 
-app.post("/js/generate/pdf", (req, res) => {
-  const filename = req.body.filename;
-  const template = req.body.template;
-
-  generatePdf(filename, template, res);
-});
-
 app.post(
   "/parse-csv-to-opensearch-data",
   [
