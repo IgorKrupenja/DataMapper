@@ -1,7 +1,11 @@
 import * as puppeteer from 'puppeteer';
 
-export async function convertHtmlToPdf(html) {
-  const browser = await puppeteer.launch({
+let browser;
+
+async function getBrowser() {
+  if (browser) return browser;
+
+  browser = await puppeteer.launch({
     args: [
       '--no-sandbox',
       '--disable-gpu',
@@ -11,8 +15,14 @@ export async function convertHtmlToPdf(html) {
     ],
     dumpio: true,
   });
-  console.debug("convertHtmlToPdf: created browser")
-  
+  console.debug("convertHtmlToPdf: created browser");
+
+  return browser;
+}
+
+export async function convertHtmlToPdf(html) {
+  const browser = await getBrowser();
+
   try {
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: "load", timeout: 0 });
@@ -31,13 +41,12 @@ export async function convertHtmlToPdf(html) {
     // But this may be bugged in Puppeteer: https://github.com/puppeteer/puppeteer/issues/7922
     await page.close();
     console.debug("convertHtmlToPdf: closed page")
-    await browser.close();
-    console.debug("convertHtmlToPdf: closed browser")
 
     return base64;
   } catch (error) {
     console.error("convertHtmlToPdf: error", error);
     await browser.close();
+    console.debug("convertHtmlToPdf: closed browser on error")
     throw error;
   }
 }
