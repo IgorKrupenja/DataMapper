@@ -8,6 +8,8 @@ async function getBrowser() {
   browser = await puppeteer.launch({
     args: [
       '--no-sandbox',
+      // Necessary with newer versions of Puppeteer
+      // https://github.com/puppeteer/puppeteer/issues/12189
       '--disable-gpu',
       '--disable-dev-shm-usage',
       '--enable-logging',
