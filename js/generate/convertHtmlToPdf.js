@@ -37,8 +37,6 @@ export async function convertHtmlToPdf(html) {
     const base64 = Buffer.from(uintArray).toString("base64");
     console.debug("convertHtmlToPdf: created pdf")
 
-    // Closing the page explicitly should not be needed normally
-    // But this may be bugged in Puppeteer: https://github.com/puppeteer/puppeteer/issues/7922
     await page.close();
     console.debug("convertHtmlToPdf: closed page")
 
