@@ -249,6 +249,37 @@ router.post(
   }
 );
 
+router.post('/chart-data-to-xlsx', [
+  body("data")
+    .isArray()
+    .withMessage("data must be an array of flat objects")
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet('Sheet1');
+  
+  const headers = Object.keys(req.body.data[0]);
+  const headerRow = worksheet.addRow(headers);
+  
+  headers.forEach((_, index) => {
+    const column = worksheet.getColumn(index + 1);
+    // ExcelJS width of 20 is approximately 150px
+    column.width = 20;
+    headerRow.getCell(index + 1).alignment = { wrapText: true };
+  });
+  
+  req.body.data.forEach(row => {
+    worksheet.addRow(headers.map(header => row[header]));
+  });
+
+  const buffer = await workbook.xlsx.writeBuffer();
+  res.json({ base64String: buffer.toString('base64') });
+});
+
 router.post('/array-to-xlsx', 
   [
     body("data")
