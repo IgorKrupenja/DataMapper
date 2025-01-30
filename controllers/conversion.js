@@ -253,14 +253,30 @@ router.post('/array-to-xlsx',
   [
     body("data")
       .isArray()
-      .withMessage("data must be an array of strings")
+      .withMessage("data must be an array of string arrays")
   ],
   async (req, res) => {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Sheet1');
     
     req.body.data.forEach((row) => {
-      worksheet.addRow([row]);
+      const processedRow = row.map(cell => {
+        if (!isNaN(cell) && cell !== '') {
+          return Number(cell);
+        }
+        return cell;
+      });
+      worksheet.addRow(processedRow);
+    });
+
+    // Calculate and set column widths based on content
+    worksheet.columns.forEach((column, index) => {
+      let maxLength = 0;
+      column.eachCell({ includeEmpty: true }, (cell) => {
+        const columnLength = cell.value ? cell.value.toString().length : 10;
+        maxLength = Math.max(maxLength, columnLength);
+      });
+      worksheet.getColumn(index + 1).width = maxLength;
     });
 
     const buffer = await workbook.xlsx.writeBuffer();
