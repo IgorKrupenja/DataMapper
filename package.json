@@ -1,10 +1,16 @@
 {
   "name": "node",
-  "version": "1.0.0",
+  "version": "2.2.0",
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "prepare": "husky",
+    "changelog": "./generate-changelog.sh",
+    "sync-version": "./sync-version.sh",
+    "bump-patch": "./bump-version.sh patch",
+    "bump-minor": "./bump-version.sh minor",
+    "bump-major": "./bump-version.sh major"
   },
   "dependencies": {
     "body-parser": "^1.20.3",
@@ -24,6 +30,9 @@
     "puppeteer": "^23.9.0",
     "replace-in-file": "^6.3.5",
     "yaml": "^2.2.1"
+  },
+  "devDependencies": {
+    "husky": "^9.1.6"
   },
   "engines": {
     "node": "^20.13.1",
