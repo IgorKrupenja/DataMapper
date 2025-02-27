@@ -125,7 +125,7 @@ router.post(
   }
 );
 
-router.post("/analytics/get-selected-csa-nps-object",
+router.post("/get-selected-csa-nps",
   [
     body("data")
       .isArray()
@@ -151,7 +151,7 @@ router.post("/analytics/get-selected-csa-nps-object",
       }
     });
 
-    return res.status(200).send({ response, periodNps: periodNpsObject });
+    return res.status(200).send({ response, periodNpsByCsa: periodNpsObject });
   }
 )
 
