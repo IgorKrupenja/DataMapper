@@ -13,6 +13,7 @@ export const transformMessagesForDmr = (messages) => {
   }
 
   const transformed = messages.map((message) => {
+    // TODO 1664: Double-check if works OK
     // Handle multiple field name variations:
     // - Aliased: id, chat_id (from get-chat-messages)
     // - Snake case: base_id, chat_base_id (from get-messages-by-ids)
