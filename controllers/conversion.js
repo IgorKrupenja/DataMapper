@@ -6,6 +6,7 @@ import Papa from 'papaparse';
 import { parse, stringify } from 'yaml';
 
 import { convertJsonToYamlDomain } from '../js/convert/jsonToYamlDomain.js';
+import transformMessagesForDmr from '../js/convert/transform-messages-for-dmr.js';
 import base64ToText from '../js/util/base64ToText.js';
 
 const router = express.Router();
@@ -415,5 +416,32 @@ router.post('/xlsx-to-array', async (req, res) => {
     res.status(500).json({ error: 'Failed to process Excel file', details: error.message });
   }
 });
+
+router.post(
+  '/transform-messages-for-dmr',
+  [
+    body('data').isArray().withMessage('data is required and must be an array'),
+  ],
+  (req, res) => {
+    console.log('transform-messages-for-dmr endpoint called');
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      console.error('Validation errors:', errors.array());
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { data } = matchedData(req);
+    console.log('Received data array length:', data?.length);
+
+    try {
+      const transformedMessages = transformMessagesForDmr(data);
+      console.log('Transformation successful, returning', transformedMessages.length, 'messages');
+      res.status(200).json(transformedMessages);
+    } catch (err) {
+      console.error('Error transforming messages for DMR:', err);
+      res.status(500).json({ message: 'Error transforming messages for DMR' });
+    }
+  },
+);
 
 export default router;
